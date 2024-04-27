@@ -1,6 +1,8 @@
 import requests
 import gtfs_realtime_pb2
 import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 def fetchTrainData(endpoint):
     """Fetch train data from the GTFS Realtime endpoint."""
@@ -68,11 +70,18 @@ def getStationCongestion(stationId):
     ]
     allTrains = []
     allDelays = []
-    for endpoint in endpoints:
-        feed = fetchTrainData(endpoint)
-        trains, delays = findTrainsAndDelaysAtStation(feed, stationId)
-        allTrains.extend(trains)
-        allDelays.extend(delays)
+    with ThreadPoolExecutor(max_workers=len(endpoints)) as executor:
+        future_to_endpoint = {executor.submit(fetchTrainData, endpoint): endpoint for endpoint in endpoints}
+        
+        for future in as_completed(future_to_endpoint):
+            endpoint = future_to_endpoint[future]
+            try:
+                feed = future.result()
+                trains, delays = findTrainsAndDelaysAtStation(feed, stationId)
+                allTrains.extend(trains)
+                allDelays.extend(delays)
+            except Exception as exc:
+                print(f'{endpoint} generated an exception: {exc}')
 
     frequency = calculateFrequency(allTrains)
     delayImpact = calculateDelayImpact(allDelays)
@@ -81,10 +90,10 @@ def getStationCongestion(stationId):
     elapsedTime = endTime - startTime
 
     if frequency:
-        print(f"Average interval between trains at station {stationId}: {frequency}")
-        print(f'Average delay impact is {delayImpact}')
-        print(f"Congestion Score: {congestionScore}")
-        print(f"With a time of {elapsedTime} seconds.")
+        # print(f"Average interval between trains at station {stationId}: {frequency}")
+        # print(f'Average delay impact is {delayImpact}')
+        # print(f"Congestion Score: {congestionScore}")
+        # print(f"With a time of {elapsedTime} seconds.")
         return frequency, congestionScore
     else:
         print(f"No data available to calculate frequency for station {stationId}")

@@ -16,13 +16,13 @@ def calculateCombinedCongestion(realTimeScore=4.0, historicalScore=10.0):
     return (float(realTimeScore) * WEIGHT_REAL_TIME) + (float(historicalScore) * WEIGHT_HISTORICAL)
 
 def getPriceAdjustment(combinedCongestion):
-    print(f"CombinedCongestion: {combinedCongestion}")
+    # print(f"CombinedCongestion: {combinedCongestion}")
     if combinedCongestion >= 10:  # Hypothetical threshold for high congestion
         return MAX_PRICE_FLUCTUATION
     elif combinedCongestion >= 5:  # Moderate congestion
         return MAX_PRICE_FLUCTUATION * 0.5
     elif combinedCongestion <= 2:
-        print("returned this")
+        # print("returned this")
         return -MAX_DECREASE  # Maximum discount for very low congestion
     elif combinedCongestion < 5:
         return -MIN_DECREASE  # Some discount for moderate congestion
@@ -39,10 +39,10 @@ def calculateDynamicPrice(congestionScore):
 def getTicketPrice(stationId):
     """Fetch the current congestion score and compute the dynamic ticket price."""
     stationCongestion = getStationCongestion(stationId)[1]
-    print(stationCongestion, type(stationCongestion))
+    # print(stationCongestion, type(stationCongestion))
     # historicalCongestion = getHistoricalCongestion(stationId)
     congestionScore = calculateCombinedCongestion(stationCongestion)  # Assume this function fetches the current score
     return calculateDynamicPrice(congestionScore)
 
 
-print(getTicketPrice("127"))
+# print(getTicketPrice("127"))
