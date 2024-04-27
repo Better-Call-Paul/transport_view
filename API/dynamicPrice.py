@@ -24,6 +24,8 @@ WEIGHT_HISTORICAL = 0.7  # 80% weight for historical congestion
 
 
 def calculateCombinedCongestion(realTimeScore, historicalScore=10.0):
+    print("Real time score", realTimeScore)
+    print("Historical score", historicalScore)
     return (float(realTimeScore) * WEIGHT_REAL_TIME) + (float(historicalScore) * WEIGHT_HISTORICAL)
 
 def getPriceAdjustment(combinedCongestion):
@@ -42,6 +44,7 @@ def getPriceAdjustment(combinedCongestion):
 
 def calculateDynamicPrice(congestionScore):
     """Calculate the dynamic price based on the congestion score."""
+    print("Congestion score", congestionScore)
     adjustment = getPriceAdjustment(congestionScore)
     dynamicPrice = BASE_TICKET_PRICE + adjustment
     return round(dynamicPrice, 2)
@@ -50,18 +53,33 @@ def getHistoricalCongestion(stationId):
     now = datetime.now()
     dayOfWeek = now.weekday()
     hour = now.hour
+    print(dayOfWeek, hour)
 
     station_data = collection.find_one({'station_id': stationId})
+    print("test")
     if not station_data:
         return None  # or handle the error as needed
+    print(station_data)
     station_complex_id = station_data.get('station_complex_id')
+    station_complex_id = int(station_complex_id)
+    dayOfWeek = int(dayOfWeek)
+    hour = int(hour)
+    print(int(station_complex_id))
 
-    api_url = 'http://model-api-url.com/get_congestion'
-    params = {'station_id': station_complex_id, 'day': dayOfWeek, 'hour': hour}
-    response = requests.get(api_url, params=params)
+    data = {
+        'station_complex_id': station_complex_id,
+        'day_of_week': dayOfWeek,
+        'hour': hour
+    }
+    print(data)
+
+    api_url = 'http://127.0.0.1:8080/predict'
+    params = {'station_complex_id': 283, 'day_of_week': 6, 'hour': 3}
+    response = requests.post(api_url, json=data)
+
     if response.status_code == 200:
         congestion_data = response.json()
-        return congestion_data.get('ridership')
+        return congestion_data
     else:
         return None  # or handle API error as needed
 
@@ -77,8 +95,9 @@ def getTicketPrice(stationId):
     stationCongestion = getStationCongestion(stationId)[1]
     # print(stationCongestion, type(stationCongestion))
     historicalCongestion = getHistoricalCongestion(stationId)
-    congestionScore = calculateCombinedCongestion(stationCongestion)  # Assume this function fetches the current score
+    print(historicalCongestion[0])
+    congestionScore = calculateCombinedCongestion(stationCongestion,historicalCongestion[0])  # Assume this function fetches the current score
     return calculateDynamicPrice(congestionScore)
 
 
-# print(getTicketPrice("232"))
+print(getTicketPrice("123"))

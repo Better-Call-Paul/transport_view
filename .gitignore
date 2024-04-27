@@ -160,7 +160,7 @@ cython_debug/
 #.idea/
 
 
-HistoricalRidership.json
+./HistoricalRidership.json
 models/test1.joblib
 models/millionDataModel.joblib
 models/fiveMillionDatapointModel.joblib
