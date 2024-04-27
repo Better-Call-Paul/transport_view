@@ -11,34 +11,7 @@ import requests
 app = Flask(__name__)
 CORS(app)  # Enable CORS on all routes
 
-"""
-stations = {
-    "Grand Central 1": {"neighborhood": "Manhattan", "lat": 40.7527, "lon": -73.9772, "price": random.uniform(2.5, 5)},
-    "Times Square 1": {"neighborhood": "Manhattan", "lat": 40.7553, "lon": -73.9869, "price": random.uniform(2.5, 5)},
-    "Grand Central 2": {"neighborhood": "Alphabet City", "lat": 40.7258, "lon": -73.9775, "price": random.uniform(2.5, 5)},
-    "Times Square 2": {"neighborhood": "Bronx", "lat": 40.8161, "lon": -73.8964, "price": random.uniform(2.5, 5)},
-    "Grand Central 3": {"neighborhood": "Bronx", "lat": 40.7527, "lon": -73.9772, "price": random.uniform(2.5, 5)},
-    "Grand Central 5": {"neighborhood": "Hudson Yarsds", "lat": 40.75665808227519, "lon": -74.00011136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 4": {"neighborhood": "Hudson Yarspds", "lat": 40.7566583208227519, "lon": -74.00011136253202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 8": {"neighborhood": "Hudson Yaxsrds", "lat": 40.7566580853227519, "lon": -74.00011136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 9": {"neighborhood": "Hudson Yasrds", "lat": 40.75665808227519, "lon": -74.0001113625302637, "price": random.uniform(2.5, 5)},
-    "Grand Central 10": {"neighborhood": "Hudson sYards", "lat": 40.7566580844527519, "lon": -74.00011136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 11": {"neighborhood": "Hudson Ysarfds", "lat": 40.75665808435227519, "lon": -74.05430011136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 0": {"neighborhood": "Hudson Yarsds", "lat": 40.7566580825427519, "lon": -74.0001135136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 12": {"neighborhood": "Manhattan", "lat": 40.7527, "lon": -73.9772, "price": random.uniform(2.5, 5)},
-    "Times Square 13": {"neighborhood": "Manhattan", "lat": 40.7553, "lon": -73.9869, "price": random.uniform(2.5, 5)},
-    "Grand Central 26": {"neighborhood": "Alphabet City", "lat": 40.7258, "lon": -73.9775, "price": random.uniform(2.5, 5)},
-    "Times Square 28": {"neighborhood": "Bronx", "lat": 40.8161, "lon": -73.8964, "price": random.uniform(2.5, 5)},
-    "Grand Central 39": {"neighborhood": "Bronx", "lat": 40.7527, "lon": -73.9772, "price": random.uniform(2.5, 5)},
-    "Grand Central 52": {"neighborhood": "Hudson Yarsds", "lat": 40.75665808227519, "lon": -74.00011136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 43": {"neighborhood": "Hudson Yarspds", "lat": 40.7566583208227519, "lon": -74.00011136253202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 81": {"neighborhood": "Hudson Yaxsrds", "lat": 40.7566580853227519, "lon": -74.00011136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 92": {"neighborhood": "Hudson Yasrds", "lat": 40.75665808227519, "lon": -74.0001113625302637, "price": random.uniform(2.5, 5)},
-    "Grand Central 101": {"neighborhood": "Hudson sYards", "lat": 40.7566580844527519, "lon": -74.00011136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 11": {"neighborhood": "Hudson Ysarfds", "lat": 40.75665808435227519, "lon": -74.05430011136202637, "price": random.uniform(2.5, 5)},
-    "Grand Central 0": {"neighborhood": "Hudson Yarsds", "lat": 40.7566580825427519, "lon": -74.0001135136202637, "price": random.uniform(2.5, 5)},
-}
-"""
+
 stations = {}
 def update_station_prices(sw_lat, sw_lng, ne_lat, ne_lng, user_lat, user_lng):
     # Enter the application context
