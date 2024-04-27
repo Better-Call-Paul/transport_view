@@ -1,4 +1,15 @@
 from realTimeParse import getStationCongestion
+from datetime import datetime
+from pymongo import MongoClient
+import certifi
+import requests
+
+
+
+uri = 'mongodb+srv://ip2294:vZGaG2ngwrXFxZnL@mtastationdata.jwckd6t.mongodb.net/MTA?retryWrites=true&w=majority&appName=MTAStationData'
+client = MongoClient(uri, tlsCAFile=certifi.where())
+db = client['MTA']
+collection = db['ridership']
 
 # Constants
 BASE_TICKET_PRICE = 2.90
@@ -12,7 +23,8 @@ WEIGHT_REAL_TIME = 0.3  # 20% weight for real-time congestion
 WEIGHT_HISTORICAL = 0.7  # 80% weight for historical congestion
 
 
-def calculateCombinedCongestion(realTimeScore=4.0, historicalScore=10.0):
+def calculateCombinedCongestion(realTimeScore, historicalScore=10.0):
+    print("Real time score", realTimeScore)
     return (float(realTimeScore) * WEIGHT_REAL_TIME) + (float(historicalScore) * WEIGHT_HISTORICAL)
 
 def getPriceAdjustment(combinedCongestion):
@@ -35,14 +47,39 @@ def calculateDynamicPrice(congestionScore):
     dynamicPrice = BASE_TICKET_PRICE + adjustment
     return round(dynamicPrice, 2)
 
+def getHistoricalCongestion(stationId):
+    now = datetime.now()
+    dayOfWeek = now.weekday()
+    hour = now.hour
+
+    station_data = collection.find_one({'station_id': stationId})
+    if not station_data:
+        return None  # or handle the error as needed
+    station_complex_id = station_data.get('station_complex_id')
+
+    api_url = 'http://model-api-url.com/get_congestion'
+    params = {'station_id': station_complex_id, 'day': dayOfWeek, 'hour': hour}
+    response = requests.get(api_url, params=params)
+    if response.status_code == 200:
+        congestion_data = response.json()
+        return congestion_data.get('ridership')
+    else:
+        return None  # or handle API error as needed
+
+    # datetime to find current day of week 
+    # also find the rounded down floor hour, 0-23
+    # convert stationId to complexId from mongoDB
+    # call Model API station, day of week(0 indexing), hour
+    # return ridershare
+    
 
 def getTicketPrice(stationId):
     """Fetch the current congestion score and compute the dynamic ticket price."""
     stationCongestion = getStationCongestion(stationId)[1]
     # print(stationCongestion, type(stationCongestion))
-    # historicalCongestion = getHistoricalCongestion(stationId)
+    historicalCongestion = getHistoricalCongestion(stationId)
     congestionScore = calculateCombinedCongestion(stationCongestion)  # Assume this function fetches the current score
     return calculateDynamicPrice(congestionScore)
 
 
-# print(getTicketPrice("127"))
+print(getTicketPrice("232"))
