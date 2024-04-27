@@ -1,10 +1,12 @@
 var map = L.map('map').setView([40.7128, -74.0060], 12);
-var markers = {};
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors, © CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19
 }).addTo(map);
+
+var markers = {};
 
 function updateStationsAndDashboard() {
     fetch('/api/stations')
@@ -14,15 +16,17 @@ function updateStationsAndDashboard() {
                 var marker = markers[station.name];
                 if (marker) {
                     marker.setLatLng([station.lat, station.lon])
-                        .setPopupContent(`<b>${station.name}</b><br/>Ticket Price: $${station.price}`);
+                          .setIcon(L.divIcon({
+                              className: 'custom-marker',
+                              html: `<span>$${station.price}</span>`  // Ensure HTML is simple and controlled
+                          }));
                 } else {
-                    markers[station.name] = L.circleMarker([station.lat, station.lon], {
-                        color: 'purple',
-                        radius: 10,
-                        fillColor: '#af52de',
-                        fillOpacity: 0.8,
-                    }).addTo(map)
-                      .bindPopup(`<b>${station.name}</b><br/>Ticket Price: $${station.price}`);
+                    markers[station.name] = L.marker([station.lat, station.lon], {
+                        icon: L.divIcon({
+                            className: 'custom-marker',
+                            html: `<span>$${station.price}</span>`  // Consistent with update
+                        })
+                    }).addTo(map);
                 }
             });
 
@@ -30,6 +34,7 @@ function updateStationsAndDashboard() {
         })
         .catch(error => console.error('Error:', error));
 }
+
 
 function updateDashboard(stations) {
     var totalPrice = 0;
@@ -46,3 +51,38 @@ setInterval(updateStationsAndDashboard, 3000);
 
 // Initial call to set up the station markers and dashboard
 updateStationsAndDashboard();
+
+
+function updateAveragePricesChart() {
+    fetch('/api/average-prices')
+        .then(response => response.json())
+        .then(averages => {
+            const chart = document.getElementById('pricesChart');
+            chart.innerHTML = ''; // Clear existing content
+            let maxPrice = 5; // Define maximum price for scaling bars
+            
+            // Create and append new bars for updated averages
+            Object.entries(averages).forEach(([neighborhood, price]) => {
+                const heightPercentage = (price / maxPrice) * 100; // Calculate height as a percentage of maxPrice
+                const priceBox = document.createElement('div');
+                priceBox.className = 'price-box';
+                priceBox.style.height = `${heightPercentage}%`;
+
+                // Adjust dynamically styling based on value
+                priceBox.innerHTML = `
+                    <div class="bar" style="height: ${heightPercentage}%">
+                        <p>${price.toFixed(2)}</p>
+                    </div>
+                    <div class="neighborhood">${neighborhood}</div>
+                `;
+                chart.appendChild(priceBox);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Update the average prices every 3 seconds
+setInterval(updateAveragePricesChart, 3000);
+
+// Call this function to initially load the average prices chart
+updateAveragePricesChart();

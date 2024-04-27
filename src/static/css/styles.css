@@ -1,9 +1,17 @@
+@font-face {
+    font-family: 'Berkeley Mono';
+    src: url('../fonts/BerkeleyMonoTrial-Regular.otf') format('opentype'),
+         url('../fonts/BerkeleyMonoTrial-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body, html {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #121212;
-    color: white;
+    font-family: 'Berkeley Mono', monospace;
+    background-color:#000000; /* Black background */
+    color: #ffffff; /* White text */
 }
 
 .dashboard {
@@ -17,7 +25,7 @@ body, html {
 
 .header h1 {
     font-size: 2em;
-    color: #0db9f0;
+    color: #ffffff;
 }
 
 .main-boxes {
@@ -41,7 +49,7 @@ body, html {
     font-size: 1.5em;
     margin: 0;
     padding: 10px 0;
-    color: #0db9f0;
+    color: #ffffff;
     border-bottom: 2px solid #333333;
 }
 
@@ -60,20 +68,48 @@ body, html {
 
 /* Chart bars styles */
 .bar {
-    display: inline-block;
-    width: 18%;
-    height: 60px;
-    margin: 0 1%;
-    background-color: #0db9f0;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Full width of the .price-box container */
+    background-color: #000000; /* Set your desired bar color */
     border-radius: 5px;
+    transition: height 0.3s ease-in-out; /* Smooth height transition */
 }
 
 .bar p {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    bottom: -25px;
-    color: #0db9f0;
+    color: #ffffff;
     font-weight: bold;
+    position: relative; /* May adjust as absolute if needed specifically for your layout */
+    text-align: center;
+    bottom: 0; /* Adjust if needed to position the text inside or outside the bar */
+}
+
+#pricesChart {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 200px;
+    margin-top: 20px;
+}
+
+.price-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; /* Align items to the bottom */
+    flex-grow: 1; /* Flexible growth of each bar area */
+    margin: 5px;
+    min-width: 60px; /* Minimal width handling */
+}
+
+.neighborhood {
+    margin-top: 8px; /* Increase margin-top to push the name lower */
+    color: #ccc; /* Styling for text color */
+    font-size: 0.8em; /* Adjust font size as needed */
+}
+
+/* Additional styling */
+.bar:hover {
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.6); /* Example hover effect if desired */
 }
