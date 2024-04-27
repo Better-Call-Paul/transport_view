@@ -55,8 +55,8 @@ body, html {
 
 #map {
     height: 500px;
-    width: 90%;
-    margin: 20px 0;
+    width: 90%; /* Adjust width as needed */
+    margin: 20px auto; /* Centers the map horizontally */
     border-radius: 10px;
     border: 3px solid #333333;
 }
@@ -113,3 +113,4 @@ body, html {
 .bar:hover {
     box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.6); /* Example hover effect if desired */
 }
+

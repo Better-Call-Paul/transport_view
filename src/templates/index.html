@@ -6,43 +6,31 @@
     <title>NYC Subway Dashboard</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        #map {
-            height: 600px;
-        }
-        .leaflet-marker-icon .marker-label {
-            background-color: #8667a8; /* Example: purple background */
-            border-radius: 10px;
-            padding: 4px 6px;
-            color: white;
-            font-size: 13px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .leaflet-popup-tip-container {
-            display: none;  /* Hides the tip of the popup */
-        }
-    </style>
+
     <style>
         .custom-marker {
             background-color: #8667a8; /* Purple background */
             color: white;
-            font-size: 12px;
+            font-size: 12px; /* Adjust based on your text size */
             text-align: center;
             border-radius: 3px;
-            padding: 4px 6px;
-            display: inline-block;  /* Ensures that the div acts like an inline element but respects padding, width */
-            min-width: 100px;  /* Minimum width, adjust as needed */
-            max-width: 120px;  /* Maximum width to prevent excessively wide markers */
+            padding: 6px 6px; /* Even padding on top and bottom */
+            display: inline-block;
+            min-width: 40px;  /* Adjusted for minimal width around the text */
+            max-width: 40px;  /* Adjusted for minimal width around the text */
+            line-height: 1.4; /* Adjust line height for better vertical alignment */
+            vertical-align: middle; /* Ensure text aligns vertically in the middle */
         }
     </style>
+    
+    
     
     
 </head>
 <body>
     <div class="dashboard">
         <div class="header">
-            <h1>NYC Subway Dashboard</h1>
+            <h1>Subway Surgers</h1>
         </div>
         <div class="main-boxes">
             <div class="box current-subways">

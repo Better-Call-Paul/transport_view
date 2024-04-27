@@ -1,10 +1,48 @@
-var map = L.map('map').setView([40.7128, -74.0060], 12);
+var map = L.map('map');
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap contributors, © CARTO',
-    subdomains: 'abcd',
-    maxZoom: 19
-}).addTo(map);
+// Function to initialize the map and get user's location
+function initMap() {
+    map.setView([40.7128, -74.0060], 12); // Default view
+    
+    // Try to get the user’s location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var userLat = position.coords.latitude;
+            var userLng = position.coords.longitude;
+            
+            // Center the map on user's current location
+            map.setView([userLat, userLng], 12);
+            
+            // Add a marker at the user's location
+            L.marker([userLat, userLng]).addTo(map)
+                .bindPopup('You are here.')
+                .openPopup();
+                
+        }, function() {
+            alert('Could not get your location. Using default location.');
+        });
+    }
+
+    // Set up the tile layer
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap contributors, © CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+    }).addTo(map);
+}
+
+// Add a listener to get bounds when map stops moving
+map.on('moveend', function() {
+    var bounds = map.getBounds();
+    var ne = bounds.getNorthEast(); 
+    var sw = bounds.getSouthWest(); 
+
+    console.log('North East: ', ne.lat, ne.lng);
+    console.log('South West: ', sw.lat, sw.lng);
+});
+
+// Call initMap to set up the map
+initMap();
 
 var markers = {};
 
