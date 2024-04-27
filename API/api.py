@@ -15,7 +15,7 @@ def getLocalStationPrices():
 
     if not (user_lat and user_lng and sw_lat and sw_lng and ne_lat and ne_lng):
         return jsonify({'error': 'Missing required parameters'}), 400
-
+    print(user_lat,user_lng,sw_lat,sw_lng)
     localStationPrices = stationPrices(user_lat,user_lng,sw_lat , sw_lng , ne_lat , ne_lng)
     return jsonify(localStationPrices)
 

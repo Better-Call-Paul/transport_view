@@ -34,6 +34,7 @@ def stationPrices(user_lat,user_lng,sw_lat , sw_lng , ne_lat , ne_lng):
     user_location = (user_lat, user_lng)
     stations = findStationsWithinViewport(sw_lat, sw_lng, ne_lat, ne_lng,neighborhoods)
     priced_stations = getTicketPriceForAllStations(stations, user_location)
+    print("FOUND PRICED STATIONS")
     return json.dumps(priced_stations)
 
 
@@ -81,47 +82,39 @@ def getTicketPriceForStation(station, user_location):
         ticket_price = getTicketPrice(station_id)
         coordinates = (station['latitude'], station['longitude'])
         distance = calculateDistanceToUser(coordinates, user_location)
-        station['ticket_price'] = ticket_price
-        station['distance'] = distance
+        station['ticket_price'] = ticket_price if ticket_price is not None else "N/A"
+        station['distance'] = distance if distance is not None else float('inf')
         station['coordinates'] = coordinates
     except KeyError as e:
         print(f"KeyError: {e} - Check station fields: {station}")
+        station['ticket_price'] = "Error"
+        station['distance'] = float('inf')  # Set a default large value to indicate error
+        station['coordinates'] = (0, 0)  # Default coordinates
+    except Exception as e:
+        print(f"General error processing station {station.get('station_id', 'Unknown')}: {e}")
+        station['ticket_price'] = "Error"
+        station['distance'] = float('inf')  # Set a default large value to indicate error
+        station['coordinates'] = (0, 0)  # Default coordinates
     return station
+
+
 
 def getTicketPriceForAllStations(stations, user_location):
     processed_stations = []
     with ThreadPoolExecutor(max_workers=10) as executor:
-        futures = [executor.submit(getTicketPriceForStation, station, user_location) for station in stations]
+        futures = {executor.submit(getTicketPriceForStation, station, user_location): station for station in stations}
         for future in as_completed(futures):
-            processed_stations.append(future.result())
-    return sorted(processed_stations, key=lambda x: x['distance'])
-
-# def getTicketPriceForAllStations(stations, user_location):
-#     for station in stations:
-#         print(station)  # Debugging: See what each station object contains
-#         station_id = station['station_id']
-#         ticket_price = getTicketPrice(station_id)
-#         station['ticket_price'] = ticket_price
-#         try:
-#             coordinates = (station['latitude'], station['longitude'])
-#             station['distance'] = calculateDistanceToUser(coordinates, user_location)
-#             station['coordinates'] = coordinates
-#         except KeyError as e:
-#             print(f"KeyError: {e} - Check station fields: {station}")
-
-#     with ThreadPoolExecutor(max_workers=10) as executor:
-#         # Future object to station info mapping
-#         future_to_station = {executor.submit(get_ticket_price_for_station, station, user_location): station for station in stations}
-#         for future in concurrent.futures.as_completed(future_to_station):
-#             station = future_to_station[future]
-#             try:
-#                 ticket_price, distance = future.result()
-#                 station['ticket_price'] = ticket_price
-#                 station['distance'] = distance
-#             except Exception as exc:
-#                 print(f'{station["station_id"]} generated an exception: {exc}')
-#     return sorted(stations, key=lambda x: x['distance'])
-
+            try:
+                result = future.result()
+                if 'distance' in result:  # Ensure distance is present
+                    processed_stations.append(result)
+                else:
+                    print(f"Missing 'distance' in station data: {result}")
+            except Exception as e:
+                station = futures[future]
+                print(f"Failed to process station {station.get('station_id', 'Unknown')}: {e}")
+    # Proceed to sort only if 'distance' is present
+    return sorted(processed_stations, key=lambda x: x.get('distance', float('inf')))
 
 
 
@@ -130,17 +123,3 @@ def calculateDistanceToUser(station_coords, user_coords):
     corrected_station_coords = (station_coords[1], station_coords[0])
     corrected_user_coords = (user_coords[1], user_coords[0])
     return geodesic(corrected_station_coords, corrected_user_coords).miles
-
-
-# bottom_left = (40.686958996645735, -73.99845089784078)
-# top_right = (40.69811400013321, -73.96821435817587)
-# user_location = (40.693196621262665, -73.98783122985066)
-
-
-# stations = findStationsWithinViewport(bottom_left[0], bottom_left[1], top_right[0], top_right[1])
-# print(stations)
-# priced_stations = getTicketPriceForAllStations(stations, user_location)
-# print(json.dumps(priced_stations, indent=4)) 
-# print("Sorted Stations with Pricing Info:")
-# for station in priced_stations:
-#     print(station)

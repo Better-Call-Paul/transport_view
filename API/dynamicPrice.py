@@ -24,12 +24,11 @@ WEIGHT_HISTORICAL = 0.7  # 80% weight for historical congestion
 
 
 def calculateCombinedCongestion(realTimeScore, historicalScore=10.0):
-    print("Real time score", realTimeScore)
     return (float(realTimeScore) * WEIGHT_REAL_TIME) + (float(historicalScore) * WEIGHT_HISTORICAL)
 
 def getPriceAdjustment(combinedCongestion):
     # print(f"CombinedCongestion: {combinedCongestion}")
-    if combinedCongestion >= 10:  # Hypothetical threshold for high congestion
+    if combinedCongestion >= 7:  # Hypothetical threshold for high congestion
         return MAX_PRICE_FLUCTUATION
     elif combinedCongestion >= 5:  # Moderate congestion
         return MAX_PRICE_FLUCTUATION * 0.5
@@ -82,4 +81,4 @@ def getTicketPrice(stationId):
     return calculateDynamicPrice(congestionScore)
 
 
-print(getTicketPrice("232"))
+# print(getTicketPrice("232"))
