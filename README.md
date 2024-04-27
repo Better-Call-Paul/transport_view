@@ -4,7 +4,7 @@
 ## Functionality
 
 Who are We:  
-     Subway-Surger is an application that manages transportation pricing and congestion in New York City. We aim to provide users with tools to plan their commute efficiently while also reducing congestion on public transportation lines.Our platform empowers users to plan their commute efficiently while also providing valuable insights for individuals involved in the real estate market.
+     Subway-Surger is an application that manages transportation pricing and congestion in New York City. We aim to provide users with tools to plan their commute efficiently while also reducing congestion on public transportation lines.Our platform empowers users to plan their commute efficiently while also providing valuable insights/patterns for individuals involved in the real estate market.
 
 ## Codebase
 __Technologies__:
