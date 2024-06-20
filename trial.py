@@ -20,3 +20,45 @@ data = {
 }
 response = requests.post(api_url, json=data)
 print(response)
+
+# volunteer opportunities
+
+# 1. Planting Trees
+# 2. Cleaning up parks
+# 3. Feeding the homeless
+# 4. Tutoring children
+
+# events = {
+#     "John" : "Planting Trees"
+#     "Adam" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+#     "John" : "Planting Trees"
+# }
+
+events = {
+    "Planting Trees" : [],
+    "Cleaning up parks" : [],
+    "Feeding the homeless" : [],
+    "Tutoring children": [],
+    []: "dummy"
+}
+print(events)
+
